@@ -37,22 +37,25 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 //Varibles
+let clicksPlayed = 0;
 let cardsPlayed = [];
 let cardsMatch = [];
 
-const cards = document.querySelectorAll('.deck li');
+const cards = [...document.querySelectorAll('.deck li')];
+const gameMoves = document.querySelectorAll('.moves');
 
 function flipCard(card) {
     console.log(this);
     this.classList.add('open', 'show');
     cardsPlayed.push(this);
     cardPlay(card);
+    setCounter();
 }
 
 cards.forEach(card => card.addEventListener('click', flipCard));
 
 
-function cardPlay (card) {
+function cardPlay () {
     //console.log(this);
     //console.log(typeof cards);
     //console.log(cardsPlayed.length)
@@ -60,12 +63,12 @@ function cardPlay (card) {
         //cardsPlayed.push(card);
         console.log('Pick another');
     } else
-    compareCards(card);
+    compareCards();
 }
 
 //const showCards = ;
 
-function compareCards(card) {
+function compareCards() {
     //console.log(this);
     //console.log(cardsPlayed[0].firstElementChild);
     //console.log(cardsPlayed[1].firstElementChild);
@@ -80,11 +83,13 @@ function compareCards(card) {
         };
         if (cardsMatch.length === 16) {
             console.log('Winner- build modalhere');
+            //youWin();
+            toggleModal()
         }
         //cardsPlayed[1].classList.add('match');
         cardsPlayed = [];
 
-        cards.forEach(card => card.addEventListener('click', flipCard));
+        //cards.forEach(card => card.addEventListener('click', flipCard));
     } else {
         console.log('flip back over');
         //window.setTimeout(window.alaert, 100000, 'Try again');
@@ -94,8 +99,35 @@ function compareCards(card) {
         //cardsPlayed[0].classList.remove('open', 'show');
         //cardsPlayed[1].classList.remove('open', 'show');
         cardsPlayed = [];
-        cards.forEach(card => card.addEventListener('click', flipCard));
+    }
+    cards.forEach(card => card.addEventListener('click', flipCard));
+}
+
+function setCounter() {
+    //timer = setInterval(setTimer,1000);
+    clicksPlayed ++;
+    gameMoves[0].textContent = clicksPlayed;
+    console.log(clicksPlayed);
+};
+
+
+var modal = document.querySelector(".modal");
+var trigger = document.querySelector(".trigger");
+var closeButton = document.querySelector(".close-button");
+
+function toggleModal() {
+    gameMoves[1].textContent = clicksPlayed;
+    modal.classList.toggle("show-modal");
+}
+
+function windowOnClick(event) {
+    if (event.target === modal) {
+        toggleModal();
     }
 }
+
+trigger.addEventListener("click", toggleModal);
+//closeButton.addEventListener("click", toggleModal);
+window.addEventListener("click", windowOnClick);
 
 
