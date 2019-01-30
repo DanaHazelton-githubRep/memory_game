@@ -2,6 +2,16 @@
  * Create a list that holds all of your cards
  */
 
+//Varibles
+let clicksPlayed = 0;
+let cardsPlayed = [];
+let cardsMatch = [];
+
+let cards = [...document.querySelectorAll('.deck li')];
+//const deck = document.querySelector(".deck");
+const gameMoves = document.querySelectorAll('.moves');
+
+
 
 /*
  * Display the cards on the page
@@ -9,7 +19,7 @@
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
-var deck = [];
+
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -21,8 +31,25 @@ function shuffle(array) {
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
     }
-
     return array;
+}
+const deck = document.querySelector(".deck");
+
+function initGame() {
+    console.log('GO');
+    let shuffleCards = shuffle(cards);
+    for (let i = 0; i < shuffleCards.length; i++) {
+        [].forEach.call(shuffleCards, function(item){
+            deck.appendChild(item);
+            clicksPlayed = 0;
+            gameMoves[0].textContent = clicksPlayed;
+        });
+    }
+    //Reset cards flip back over
+    console.log(cardsMatch);
+    for (i in cardsMatch) {
+            cardsMatch[i].classList.remove('open', 'show', 'match');
+        }
 }
 
 
@@ -36,21 +63,12 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
-//Varibles
-let clicksPlayed = 0;
-let cardsPlayed = [];
-let cardsMatch = [];
-
-const cards = [...document.querySelectorAll('.deck li')];
-const gameMoves = document.querySelectorAll('.moves');
-
 function flipCard(card) {
-    console.log(this);
+    //console.log(this);
     this.classList.add('open', 'show');
     cardsPlayed.push(this);
     cardPlay(card);
-    setCounter();
-}
+ }
 
 cards.forEach(card => card.addEventListener('click', flipCard));
 
@@ -66,23 +84,31 @@ function cardPlay () {
     compareCards();
 }
 
-//const showCards = ;
+function setCounter() {
+    //timer = setInterval(setTimer,1000);
+    clicksPlayed ++;
+    gameMoves[0].textContent = clicksPlayed;
+    console.log(clicksPlayed);
+};
 
+
+//Compare flipped cards
 function compareCards() {
     //console.log(this);
     //console.log(cardsPlayed[0].firstElementChild);
     //console.log(cardsPlayed[1].firstElementChild);
+    setCounter();
     cards.forEach(card => card.removeEventListener('click', flipCard));
     if (cardsPlayed[0].firstElementChild.className === cardsPlayed[1].firstElementChild.className) {
         console.log('Match');
         for (i in cardsPlayed) {
-            console.log(i);
-            console.log(cardsPlayed);
+            //console.log(i);
+            //console.log(cardsPlayed);
             cardsPlayed[i].classList.add('match');
             cardsMatch.push(cardsPlayed[i]);
         };
         if (cardsMatch.length === 16) {
-            console.log('Winner- build modalhere');
+            //console.log('Winner- build modalhere');
             //youWin();
             toggleModal()
         }
@@ -91,7 +117,7 @@ function compareCards() {
 
         //cards.forEach(card => card.addEventListener('click', flipCard));
     } else {
-        console.log('flip back over');
+        //console.log('flip back over');
         //window.setTimeout(window.alaert, 100000, 'Try again');
         for (i in cardsPlayed) {
             cardsPlayed[i].classList.remove('open', 'show');
@@ -103,14 +129,12 @@ function compareCards() {
     cards.forEach(card => card.addEventListener('click', flipCard));
 }
 
-function setCounter() {
-    //timer = setInterval(setTimer,1000);
-    clicksPlayed ++;
-    gameMoves[0].textContent = clicksPlayed;
-    console.log(clicksPlayed);
-};
 
 
+//On page load run initGame();
+windowOnLoad = initGame();
+
+// Code for modal
 var modal = document.querySelector(".modal");
 var trigger = document.querySelector(".trigger");
 var closeButton = document.querySelector(".close-button");
@@ -126,8 +150,7 @@ function windowOnClick(event) {
     }
 }
 
-trigger.addEventListener("click", toggleModal);
+modal.addEventListener("click", toggleModal);
 //closeButton.addEventListener("click", toggleModal);
 window.addEventListener("click", windowOnClick);
-
 
