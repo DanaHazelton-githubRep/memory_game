@@ -1,17 +1,17 @@
  /*
  * Create a list that holds all of your cards
  */
+ const cards = [...document.querySelectorAll('.deck li')];
 
 //Varibles
 let clicksPlayed = 0;
 let cardsPlayed = [];
 let cardsMatch = [];
 
-let cards = [...document.querySelectorAll('.deck li')];
+
 //const deck = document.querySelector(".deck");
 const gameMoves = document.querySelectorAll('.moves');
-
-
+const gameTime = document.querySelector('.time');
 
 /*
  * Display the cards on the page
@@ -36,7 +36,14 @@ function shuffle(array) {
 const deck = document.querySelector(".deck");
 
 function initGame() {
-    console.log('GO');
+        //Reset cards flip back over
+    //console.log(cardsMatch);
+    for (i in cardsMatch) {
+            cardsMatch[i].classList.remove('open', 'show', 'match');
+        }
+        cardsMatch = [];
+        //console.log(cardsMatch);
+    //console.log('GO');
     let shuffleCards = shuffle(cards);
     for (let i = 0; i < shuffleCards.length; i++) {
         [].forEach.call(shuffleCards, function(item){
@@ -45,11 +52,7 @@ function initGame() {
             gameMoves[0].textContent = clicksPlayed;
         });
     }
-    //Reset cards flip back over
-    console.log(cardsMatch);
-    for (i in cardsMatch) {
-            cardsMatch[i].classList.remove('open', 'show', 'match');
-        }
+    cards.forEach(card => card.addEventListener('click', flipCard));
 }
 
 
@@ -68,21 +71,32 @@ function flipCard(card) {
     this.classList.add('open', 'show');
     cardsPlayed.push(this);
     cardPlay(card);
- }
-
-cards.forEach(card => card.addEventListener('click', flipCard));
-
+    setCounter();
+}
 
 function cardPlay () {
     //console.log(this);
     //console.log(typeof cards);
     //console.log(cardsPlayed.length)
+    if (cardsPlayed.length === 1){
+        var stTimer = setInterval(gmTimer, 1000);
+        let t = 0;
+function gmTimer() {
+    //console.log(this);
+    t ++;
+    console.log(t);
+    //document.getElementByID('.time').innerHTML = t.toLocaleTimeString();
+    gameTime.textContent = t
+}
+    }
     if (cardsPlayed.length < 2) {
         //cardsPlayed.push(card);
         console.log('Pick another');
     } else
-    compareCards();
+    setTimeout(compareCards, 500);
 }
+
+
 
 function setCounter() {
     //timer = setInterval(setTimer,1000);
@@ -97,7 +111,7 @@ function compareCards() {
     //console.log(this);
     //console.log(cardsPlayed[0].firstElementChild);
     //console.log(cardsPlayed[1].firstElementChild);
-    setCounter();
+    //setCounter();
     cards.forEach(card => card.removeEventListener('click', flipCard));
     if (cardsPlayed[0].firstElementChild.className === cardsPlayed[1].firstElementChild.className) {
         console.log('Match');
@@ -110,7 +124,9 @@ function compareCards() {
         if (cardsMatch.length === 16) {
             //console.log('Winner- build modalhere');
             //youWin();
+
             toggleModal()
+            clearInterval(stTimer);
         }
         //cardsPlayed[1].classList.add('match');
         cardsPlayed = [];
@@ -118,7 +134,7 @@ function compareCards() {
         //cards.forEach(card => card.addEventListener('click', flipCard));
     } else {
         //console.log('flip back over');
-        //window.setTimeout(window.alaert, 100000, 'Try again');
+        window.setTimeout(window.alaert, 1000, 'Try again');
         for (i in cardsPlayed) {
             cardsPlayed[i].classList.remove('open', 'show');
         }
