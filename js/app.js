@@ -36,14 +36,12 @@ function shuffle(array) {
 const deck = document.querySelector(".deck");
 
 function initGame() {
-        //Reset cards flip back over
-    //console.log(cardsMatch);
+    //Reset cards flip back over
     for (i in cardsMatch) {
             cardsMatch[i].classList.remove('open', 'show', 'match');
         }
         cardsMatch = [];
-        //console.log(cardsMatch);
-    //console.log('GO');
+    //shuffle deck
     let shuffleCards = shuffle(cards);
     for (let i = 0; i < shuffleCards.length; i++) {
         [].forEach.call(shuffleCards, function(item){
@@ -51,6 +49,13 @@ function initGame() {
             clicksPlayed = 0;
             gameMoves[0].textContent = clicksPlayed;
         });
+    }
+    restoreStars();
+    function restoreStars() {
+        console.log('hello')
+        const star = document.querySelector('.stars');
+        if (star.length != 2);
+        //star.appendChild();
     }
     cards.forEach(card => card.addEventListener('click', flipCard));
 }
@@ -68,84 +73,81 @@ function initGame() {
  */
 function flipCard(card) {
     //console.log(this);
+    //setCounter();
     this.classList.add('open', 'show');
     cardsPlayed.push(this);
     cardPlay(card);
-    setCounter();
+    //setCounter();
 }
 
 function cardPlay () {
-    //console.log(this);
-    //console.log(typeof cards);
-    //console.log(cardsPlayed.length)
-    if (cardsPlayed.length === 1){
-        var stTimer = setInterval(gmTimer, 1000);
-        let t = 0;
-function gmTimer() {
-    //console.log(this);
-    t ++;
-    console.log(t);
-    //document.getElementByID('.time').innerHTML = t.toLocaleTimeString();
-    gameTime.textContent = t
-}
-    }
+    // if (clicksPlayed = 1){
+    //     var stTimer = setInterval(gmTimer, 1000);
+    //     //let t = 0;
+    // }
     if (cardsPlayed.length < 2) {
         //cardsPlayed.push(card);
         console.log('Pick another');
-    } else
-    setTimeout(compareCards, 500);
+    } else {
+        cards.forEach(card => card.removeEventListener('click', flipCard));
+        setTimeout(compareCards, 500);
+        setCounter();
+    }
 }
 
-
+//let t = 0;
+function gmTimer() {
+    //console.log(this);
+    gameTime.textContent ++;
+    console.log(gameTime.textContent);
+    //document.getElementByID('.time').innerHTML = t.toLocaleTimeString();
+    //gameTime.textContent = t
+}
 
 function setCounter() {
     //timer = setInterval(setTimer,1000);
     clicksPlayed ++;
     gameMoves[0].textContent = clicksPlayed;
-    console.log(clicksPlayed);
+    //console.log(clicksPlayed);
+    starRating();
 };
 
 
 //Compare flipped cards
 function compareCards() {
-    //console.log(this);
-    //console.log(cardsPlayed[0].firstElementChild);
-    //console.log(cardsPlayed[1].firstElementChild);
-    //setCounter();
-    cards.forEach(card => card.removeEventListener('click', flipCard));
     if (cardsPlayed[0].firstElementChild.className === cardsPlayed[1].firstElementChild.className) {
         console.log('Match');
         for (i in cardsPlayed) {
-            //console.log(i);
-            //console.log(cardsPlayed);
             cardsPlayed[i].classList.add('match');
             cardsMatch.push(cardsPlayed[i]);
         };
-        if (cardsMatch.length === 16) {
-            //console.log('Winner- build modalhere');
-            //youWin();
-
-            toggleModal()
-            clearInterval(stTimer);
-        }
-        //cardsPlayed[1].classList.add('match');
         cardsPlayed = [];
-
-        //cards.forEach(card => card.addEventListener('click', flipCard));
+        if (cardsMatch.length === 16) {
+            toggleModal()
+        }
     } else {
-        //console.log('flip back over');
-        window.setTimeout(window.alaert, 1000, 'Try again');
+        window.setTimeout(window.alaert, 3000, 'Try again');
         for (i in cardsPlayed) {
             cardsPlayed[i].classList.remove('open', 'show');
         }
-        //cardsPlayed[0].classList.remove('open', 'show');
-        //cardsPlayed[1].classList.remove('open', 'show');
+        //starRating();
         cardsPlayed = [];
-    }
+    };
     cards.forEach(card => card.addEventListener('click', flipCard));
 }
 
-
+//Star rating
+function starRating() {
+    const star = document.querySelector('.stars');
+    const firstStar = star.firstElementChild;
+    if (clicksPlayed === 8) {
+        console.log(star);
+        star.removeChild(firstStar);
+    } else if (clicksPlayed === 16){
+        console.log('Horrible');
+        star.removeChild(firstStar);
+    };
+}
 
 //On page load run initGame();
 windowOnLoad = initGame();
@@ -156,6 +158,7 @@ var trigger = document.querySelector(".trigger");
 var closeButton = document.querySelector(".close-button");
 
 function toggleModal() {
+    cards.forEach(card => card.removeEventListener('click', flipCard));
     gameMoves[1].textContent = clicksPlayed;
     modal.classList.toggle("show-modal");
 }
@@ -169,4 +172,5 @@ function windowOnClick(event) {
 modal.addEventListener("click", toggleModal);
 //closeButton.addEventListener("click", toggleModal);
 window.addEventListener("click", windowOnClick);
+
 
