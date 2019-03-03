@@ -1,9 +1,10 @@
  /*
  * Create a list that holds all of your cards
  */
-//const cards = [...document.querySelectorAll('.deck li')];
-const cards = document.querySelectorAll('.deck li');
+const cards = [...document.querySelectorAll('.deck li')];
+//const cards = document.querySelectorAll('.deck li');
 
+const deck = document.querySelector(".deck");
 
 //Varibles
 let clicksPlayed = 0;
@@ -11,7 +12,7 @@ let cardsPlayed = [];
 let cardsMatch = [];
 
 
-//const deck = document.querySelector(".deck");
+
 const gameMoves = document.querySelectorAll('.moves');
 
 const star = document.querySelector('.stars');
@@ -36,19 +37,20 @@ function shuffle(array) {
     }
     return array;
 }
-const deck = document.querySelector(".deck");
 
 function initGame() {
-    //Reset cards flip back over
+    //Reset all cards to start game.
     for (i in cardsMatch) {
             cardsMatch[i].classList.remove('open', 'show', 'match');
     }
+    // Clear out cardMatch list
     cardsMatch = [];
     for (i in cardsPlayed) {
         cardsPlayed[i].classList.remove('open', 'show');
     }
+    // Clear cardsPlayed list
     cardsPlayed = [];
-    //restore Starsback to three
+    //restore Stars back to three
     firstStar[0].style.visibility = "visible";
     firstStar[1].style.visibility = "visible";
 
@@ -59,17 +61,12 @@ function initGame() {
             deck.appendChild(item);
             clicksPlayed = 0;
             gameMoves[0].textContent = clicksPlayed;
-    });
-}
-    //Reset timers back to 0
-    let sec = 0, min = 0, hr = 0;
-    gameTime[0].innerHTML = "0:0:0";
-    //Stop timer
+        });
+    }
+    //Stop Interval timer and Reset Clock back to 0
     clearInterval(stClock);
-    //cards.addEventListener('click', flipCard);
-    cards.forEach(card => card.addEventListener('click', flipCard));
+    gameTime[0].innerHTML = "0:0:0";
 }
-
 
 /*
  * set up the event listener for a card. If a card is clicked:
@@ -81,40 +78,55 @@ function initGame() {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
-function flipCard(card) {
+
+//Event Degration to add eventListner
+deck.addEventListener('click', event => {
+        const cardTarget = event.target;
+        if (cardTarget.classList.contains('card')) {
+            flipCard(cardTarget);
+        }
+    });
+
+function flipCard(cardTarget) {
     console.log(this);
-    //setCounter();
-    this.classList.add('open', 'show');
-    cardsPlayed.push(this);
-    cardPlay(card);
+    cardTarget.classList.add('open');
+    cardTarget.classList.add('show');
+    cardsPlayed.push(cardTarget);
+    cardPlay(cardTarget);
 }
 
 function cardPlay () {
+    //console.log(cardsPlayed.length);
     if (cardsPlayed.length < 2) {
         console.log('Pick another');
         setCounter();
     } else {
-        //cards.removeEventListener('click', flipCard);
-        cards.forEach(card => card.removeEventListener('click', flipCard));
         setTimeout(compareCards, 500);
     }
 }
 
 function setCounter() {
-    clockStart();
+    if (clicksPlayed === 0) {
+        console.log('start clock');
+        clockStart();
+    }
+    //clockStart();
+    console.log(clicksPlayed);
     clicksPlayed ++;
+    console.log(clicksPlayed);
     gameMoves[0].textContent = clicksPlayed;
     starRating();
 };
 
 // Clock Timer Code
-let stClock;
-let sec = 0, min = 0, hr = 0;
-const gameTime = document.querySelectorAll('.time');
+let stClock=[];
+const gameTime = [...document.querySelectorAll('.time')];
 function clockStart() {
-        if (clicksPlayed === 1){
+    let sec = 0, min = 0, hr = 0;
+    console.log('time start');
         stClock = setInterval(function(){
-        gameTime[0].innerHTML = hr+":"+min+":"+sec+"";
+        gameTime.innerHTML = hr+":"+min+":"+sec+"";
+        gameTime[0].innerHTML = gameTime.innerHTML;
         sec++;
             if(sec == 60){
                 min++;
@@ -125,7 +137,6 @@ function clockStart() {
                 min = 0;
             };
         },1000);
-    };
 }
 
 //Compare flipped cards
@@ -138,48 +149,37 @@ function compareCards() {
         };
         cardsPlayed = [];
         if (cardsMatch.length === 16) {
-            console.log(stClock);
             clearInterval(stClock);
             toggleModal();
         }
     } else {
-        window.setTimeout(window.alaert, 3000, 'Try again');
+        //window.setTimeout(window.alert, 3000, 'Try again');
         for (i in cardsPlayed) {
             cardsPlayed[i].classList.remove('open', 'show');
         }
         cardsPlayed = [];
     };
-    //cards.addEventListener('click', flipCard);
-    cards.forEach(card => card.addEventListener('click', flipCard));
 }
 
 //Star rating
 function starRating() {
-    //const star = document.querySelector('.stars');
-    //const firstStar = star.children;
     if (clicksPlayed === 10) {
-        console.log(star);
+        //console.log(star);
         firstStar[0].style.visibility = "collapse";
-        //star.removeChild(firstStar);
     } else if (clicksPlayed === 16){
         console.log('Horrible');
         firstStar[1].style.visibility = "collapse";
     };
 }
 
-//On page load run initGame();
-windowOnLoad = initGame();
-
 // Code for modal
 const modal = document.querySelector(".modal");
 const trigger = document.querySelector(".trigger");
-const closeButton = document.querySelector(".close-button");
+const closeButton = document.querySelector(".button");
 
 function toggleModal() {
-    //cards.remove.EventListener('click', flipCard);
-    cards.forEach(card => card.removeEventListener('click', flipCard));
     gameMoves[1].textContent = clicksPlayed;
-    gameTime[1].innerHTML = hr+":"+min+":"+sec+"";;
+    gameTime[1].innerHTML = gameTime.innerHTML;
     modal.classList.toggle("show-modal");
 }
 
@@ -189,8 +189,10 @@ function windowOnClick(event) {
     }
 }
 
-modal.addEventListener("click", toggleModal);
-//closeButton.addEventListener("click", toggleModal);
+//modal.addEventListener("click", toggleModal);
+closeButton.addEventListener("click", toggleModal);
 window.addEventListener("click", windowOnClick);
 
 
+//On page load run initGame();
+windowOnLoad = initGame();
