@@ -2,8 +2,6 @@
  * Create a list that holds all of your cards
  */
 const cards = [...document.querySelectorAll('.deck li')];
-//const cards = document.querySelectorAll('.deck li');
-
 const deck = document.querySelector(".deck");
 
 //Varibles
@@ -12,9 +10,7 @@ let cardsPlayed = [];
 let cardsMatch = [];
 
 
-
 const gameMoves = document.querySelectorAll('.moves');
-
 const star = document.querySelector('.stars');
 const firstStar = star.children;
 /*
@@ -40,13 +36,13 @@ function shuffle(array) {
 
 function initGame() {
     //Reset all cards to start game.
-    for (i in cardsMatch) {
-            cardsMatch[i].classList.remove('open', 'show', 'match');
+    for (cd in cardsMatch) {
+            cardsMatch[cd].classList.remove('open', 'show', 'match');
     }
     // Clear out cardMatch list
     cardsMatch = [];
-    for (i in cardsPlayed) {
-        cardsPlayed[i].classList.remove('open', 'show');
+    for (cd in cardsPlayed) {
+        cardsPlayed[cd].classList.remove('open', 'show');
     }
     // Clear cardsPlayed list
     cardsPlayed = [];
@@ -57,8 +53,8 @@ function initGame() {
     //shuffle deck
     const shuffleCards = shuffle(cards);
     for (let i = 0; i < shuffleCards.length; i++) {
-        [].forEach.call(shuffleCards, function(item){
-            deck.appendChild(item);
+        [].forEach.call(shuffleCards, function(kard){
+            deck.appendChild(kard);
             clicksPlayed = 0;
             gameMoves[0].textContent = clicksPlayed;
         });
