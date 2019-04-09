@@ -8,11 +8,14 @@ const deck = document.querySelector(".deck");
 let clicksPlayed = 0;
 let cardsPlayed = [];
 let cardsMatch = [];
+let modFaStar = 3;
 
 
 const gameMoves = document.querySelectorAll('.moves');
 const star = document.querySelector('.stars');
+let modalStars = [...document.querySelectorAll('.faStar')];
 const firstStar = star.children;
+const earnedStars = document.querySelector('.modFaStar')
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -23,7 +26,6 @@ const firstStar = star.children;
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
-
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
@@ -49,7 +51,8 @@ function initGame() {
     //restore Stars back to three
     firstStar[0].style.visibility = "visible";
     firstStar[1].style.visibility = "visible";
-
+    //reset modalStars
+    modalStars = [...document.querySelectorAll('.faStar')];
     //shuffle deck
     const shuffleCards = shuffle(cards);
     for (let i = 0; i < shuffleCards.length; i++) {
@@ -160,10 +163,12 @@ function compareCards() {
 //Star rating
 function starRating() {
     if (clicksPlayed === 10) {
-        //console.log(star);
+        console.log('Decent', modalStars.length);
+        modalStars.pop();
         firstStar[0].style.visibility = "collapse";
     } else if (clicksPlayed === 16){
-        console.log('Horrible');
+        console.log('Horrible', modalStars.length);
+        modalStars.pop();
         firstStar[1].style.visibility = "collapse";
     };
 }
@@ -171,23 +176,19 @@ function starRating() {
 // Code for modal
 const modal = document.querySelector(".modal");
 const trigger = document.querySelector(".trigger");
-const closeButton = document.querySelector(".button");
+const replayButton = document.querySelector(".button");
 
 function toggleModal() {
     gameMoves[1].textContent = clicksPlayed;
     gameTime[1].innerHTML = gameTime.innerHTML;
+    modFaStar = modalStars.length;
+    earnedStars.textContent = modFaStar;
+    //console.log(modFaStar);
     modal.classList.toggle("show-modal");
 }
 
-function windowOnClick(event) {
-    if (event.target === modal) {
-        toggleModal();
-    }
-}
-
-//modal.addEventListener("click", toggleModal);
-closeButton.addEventListener("click", toggleModal);
-window.addEventListener("click", windowOnClick);
+// Add Event Listner to Replay Button
+replayButton.addEventListener("click", toggleModal);
 
 
 //On page load run initGame();
